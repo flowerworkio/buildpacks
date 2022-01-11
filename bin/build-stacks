@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+docker build ./stacks/focal -t flowerworkio/base:focal --target base
+docker build ./stacks/focal -t flowerworkio/run:focal --target run
+docker build ./stacks/focal -t flowerworkio/build:focal --target build

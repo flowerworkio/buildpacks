@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+pack builder create flowerworkio/builder:focal --config ./builder.toml
