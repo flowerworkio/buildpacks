@@ -14,10 +14,11 @@ mkdir -p $asdf_layer
 git clone https://github.com/asdf-vm/asdf.git $asdf_layer --branch v0.9.0
 mkdir -p "$asdf_layer/profile.d"
 asdf_profile="$asdf_layer/profile.d/asdf.sh"
-touch $asdf_profile
-echo "export ASDF_DIR=$asdf_layer" >> $asdf_profile
-echo "export ASDF_DATA_DIR=$asdf_layer" >> $asdf_profile
-echo ". $asdf_layer/asdf.sh" >> $asdf_profile
+cat > $asdf_profile <<-EOF
+export ASDF_DIR=${asdf_layer}
+export ASDF_DATA_DIR=${asdf_layer}
+. ${asdf_layer}/asdf.sh
+EOF
 source $asdf_profile
 asdf update
 echo -e '[types]\nlaunch = true\nbuild = true' > "$asdf_layer.toml"
