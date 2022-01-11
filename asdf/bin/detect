@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+platform_dir="$1"
+build_plan="$2"
+
+if [[ ! -f .tool-versions ]]; then
+  exit 100
+fi
+
+exit 0
