@@ -3,26 +3,10 @@ id = "flowerworkio/asdf"
 uri = "asdf"
 version = "0.0.1"
 
-[[buildpacks]]
-id = "flowerworkio/elixir"
-uri = "elixir"
-version = "0.0.1"
-
-[[buildpacks]]
-id = "flowerworkio/erlang"
-uri = "erlang"
-version = "0.0.1"
-
 # Order used for detection
 [[order]]
   [[order.group]]
   id = "flowerworkio/asdf"
-  version = "0.0.1"
-  [[order.group]]
-  id = "flowerworkio/erlang"
-  version = "0.0.1"
-  [[order.group]]
-  id = "flowerworkio/elixir"
   version = "0.0.1"
 
 [stack]
