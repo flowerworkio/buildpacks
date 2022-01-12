@@ -19,7 +19,10 @@ USER ${CNB_USER_ID}:${CNB_GROUP_ID}
 FROM base as build
 
 RUN apt-get update && \
-  apt-get -y install wget jq gawk sed curl grep
+  apt-get -y install wget jq gawk sed curl grep && \
+  rm -rf /var/lib/apt/lists/* && \
+  wget https://github.com/sclevine/yj/releases/download/v5.0.0/yj-linux -O /usr/local/bin/yj && \
+  chmod +x /usr/local/bin/yj
 
 # Erlang
 ARG DEBIAN_FRONTEND=noninteractive

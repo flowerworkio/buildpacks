@@ -12,52 +12,69 @@ set -euo pipefail
 layers_dir="$1"
 platform_dir="$2"
 build_plan="$3"
-
-echo "---> Downloading and extracting asdf"
 asdf_layer="$layers_dir/.asdf"
-mkdir -p $asdf_layer
-git clone https://github.com/asdf-vm/asdf.git $asdf_layer --branch v0.9.0
-mkdir -p "$asdf_layer/profile.d"
-asdf_profile="$asdf_layer/profile.d/asdf.sh"
-cat > $asdf_profile <<-EOF
+
+local_asdf_checksum=$((sha256sum .tool-versions || echo 'DOES_NOT_EXIST') | cut -d ' ' -f 1)
+remote_asdf_checksum=$(cat "$asdf_layer.toml" | yj -t | jq -r .metadata.asdf_checksum 2>/dev/null || echo 'DOES_NOT_EXIST')
+
+if [[ "$local_asdf_checksum" != "$remote_asdf_checksum" ]]; then
+  echo "---> Downloading and extracting asdf"
+  rm -rf $asdf_layer
+  git clone https://github.com/asdf-vm/asdf.git $asdf_layer --branch v0.9.0
+  mkdir -p "$asdf_layer/profile.d"
+  asdf_profile="$asdf_layer/profile.d/asdf.sh"
+  cat > $asdf_profile <<-EOF
 export ASDF_DIR=${asdf_layer}
 export ASDF_DATA_DIR=${asdf_layer}
 . ${asdf_layer}/asdf.sh
 EOF
-source $asdf_profile
-asdf update
-echo -e '[types]\nlaunch = true\nbuild = true' > "$asdf_layer.toml"
+  source $asdf_profile
+  asdf update
+  cat > "$asdf_layer.toml" <<EOF
+[types]
+build = true
+cache = true
+launch = true
 
-if [[ -n "$erlang_version" ]]; then
-  echo -e "---> Installing erlang"
-  asdf plugin add erlang
-  export KERL_CONFIGURE_OPTIONS="--without-wx --without-debugger --without-observer --without-et"
-  asdf install erlang $erlang_version
-fi
+[metadata]
+asdf_checksum = "$local_asdf_checksum"
+erlang_version = "$erlang_version"
+elixir_version = "$elixir_version"
+nodejs_version = "$nodejs_version"
+ruby_version = "$ruby_version"
+golang_version = "$golang_version"
+EOF
 
-if [[ -n "$elixir_version" ]]; then
-  echo -e "---> Installing elixir"
-  asdf plugin add elixir
-  asdf install elixir $elixir_version
-fi
+  if [[ -n "$erlang_version" ]]; then
+    echo -e "---> Installing erlang"
+    asdf plugin add erlang
+    export KERL_CONFIGURE_OPTIONS="--without-wx --without-debugger --without-observer --without-et"
+    asdf install erlang $erlang_version
+  fi
 
-if [[ -n "$nodejs_version" ]]; then
-  echo -e "---> Installing nodejs"
-  asdf plugin add nodejs
-  export KERL_CONFIGURE_OPTIONS="--without-wx --without-debugger --without-observer --without-et"
-  asdf install nodejs $nodejs_version
-fi
+  if [[ -n "$elixir_version" ]]; then
+    echo -e "---> Installing elixir"
+    asdf plugin add elixir
+    asdf install elixir $elixir_version
+  fi
 
-if [[ -n "$ruby_version" ]]; then
-  echo -e "---> Installing ruby"
-  asdf plugin add ruby
-  asdf install ruby $ruby_version
-fi
+  if [[ -n "$nodejs_version" ]]; then
+    echo -e "---> Installing nodejs"
+    asdf plugin add nodejs
+    asdf install nodejs $nodejs_version
+  fi
 
-if [[ -n "$golang_version" ]]; then
-  echo -e "---> Installing golang"
-  asdf plugin add golang
-  asdf install golang $golang_version
+  if [[ -n "$ruby_version" ]]; then
+    echo -e "---> Installing ruby"
+    asdf plugin add ruby
+    asdf install ruby $ruby_version
+  fi
+
+  if [[ -n "$golang_version" ]]; then
+    echo -e "---> Installing golang"
+    asdf plugin add golang
+    asdf install golang $golang_version
+  fi
 fi
 
 exit 0
