@@ -21,8 +21,13 @@ FROM base as build
 RUN apt-get update && \
   apt-get -y install wget jq gawk sed curl grep
 
+# Erlang
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
   apt-get -y install build-essential autoconf m4 libncurses5-dev libwxgtk3.0-gtk3-dev libwxgtk-webview3.0-gtk3-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libssh-dev unixodbc-dev xsltproc fop libxml2-utils libncurses-dev openjdk-11-jdk
+
+# Nodejs
+RUN apt-get update && \
+  apt-get -y install python3 g++ make python3-pip
 
 USER ${CNB_USER_ID}:${CNB_GROUP_ID}
