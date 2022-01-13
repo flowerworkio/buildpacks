@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-echo "---> asdf buildpack"
 golang_version=$(cat .tool-versions | grep golang | awk '{print $2}')
 ruby_version=$(cat .tool-versions | grep ruby | awk '{print $2}')
 erlang_version=$(cat .tool-versions | grep erlang | awk '{print $2}')
@@ -8,6 +7,10 @@ elixir_version=$(cat .tool-versions | grep elixir | awk '{print $2}')
 nodejs_version=$(cat .tool-versions | grep nodejs | awk '{print $2}')
 
 set -euo pipefail
+bin_dir=$(cd $(dirname $0); pwd)
+source "$bin_dir/io.sh"
+
+io::title "---> asdf buildpack"
 
 layers_dir="$1"
 platform_dir="$2"
@@ -18,7 +21,7 @@ local_asdf_checksum=$((sha256sum .tool-versions || echo 'DOES_NOT_EXIST') | cut 
 remote_asdf_checksum=$(cat "$asdf_layer.toml" | yj -t | jq -r .metadata.asdf_checksum 2>/dev/null || echo 'DOES_NOT_EXIST')
 
 if [[ "$local_asdf_checksum" != "$remote_asdf_checksum" ]]; then
-  echo "---> Downloading and extracting asdf"
+  io::title "---> Downloading and extracting asdf"
   rm -rf $asdf_layer
   git clone https://github.com/asdf-vm/asdf.git $asdf_layer --branch v0.9.0
   mkdir -p "$asdf_layer/profile.d"
@@ -46,32 +49,32 @@ golang_version = "$golang_version"
 EOF
 
   if [[ -n "$erlang_version" ]]; then
-    echo -e "---> Installing erlang"
+    io::title "Installing erlang"
     asdf plugin add erlang
     export KERL_CONFIGURE_OPTIONS="--without-wx --without-debugger --without-observer --without-et"
     asdf install erlang $erlang_version
   fi
 
   if [[ -n "$elixir_version" ]]; then
-    echo -e "---> Installing elixir"
+    io::title "Installing elixir"
     asdf plugin add elixir
     asdf install elixir $elixir_version
   fi
 
   if [[ -n "$nodejs_version" ]]; then
-    echo -e "---> Installing nodejs"
+    io::title "Installing nodejs"
     asdf plugin add nodejs
     asdf install nodejs $nodejs_version
   fi
 
   if [[ -n "$ruby_version" ]]; then
-    echo -e "---> Installing ruby"
+    io::title "Installing ruby"
     asdf plugin add ruby
     asdf install ruby $ruby_version
   fi
 
   if [[ -n "$golang_version" ]]; then
-    echo -e "---> Installing golang"
+    io::title "Installing golang"
     asdf plugin add golang
     asdf install golang $golang_version
   fi

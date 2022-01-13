@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 platform_dir="$1"
 build_plan="$2"
 
