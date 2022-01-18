@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+platform_dir="$1"
+build_plan="$2"
+
+if [[ ! -f mix.exs ]]; then
+  exit 100
+fi
+
+exit 0

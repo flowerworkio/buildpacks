@@ -3,10 +3,18 @@ id = "flowerworkio/asdf"
 uri = "asdf"
 version = "0.0.1"
 
+[[buildpacks]]
+id = "flowerworkio/phoenix"
+uri = "phoenix"
+version = "0.0.1"
+
 # Order used for detection
 [[order]]
   [[order.group]]
   id = "flowerworkio/asdf"
+  version = "0.0.1"
+  [[order.group]]
+  id = "flowerworkio/phoenix"
   version = "0.0.1"
 
 [stack]

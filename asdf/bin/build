@@ -10,7 +10,7 @@ set -euo pipefail
 bin_dir=$(cd $(dirname $0); pwd)
 source "$bin_dir/io.sh"
 
-io::title "---> asdf buildpack"
+io::title "===> asdf buildpack"
 
 layers_dir="$1"
 platform_dir="$2"
@@ -24,11 +24,15 @@ if [[ "$local_asdf_checksum" != "$remote_asdf_checksum" ]]; then
   io::title "---> Downloading and extracting asdf"
   rm -rf $asdf_layer
   git clone https://github.com/asdf-vm/asdf.git $asdf_layer --branch v0.9.0
+  mkdir -p "$asdf_layer/env"
+  asdf_env="$asdf_layer/env/asdf"
+  cat > $asdf_env <<-EOF
+  ASDF_DIR=${asdf_layer}
+  ASDF_DATA_DIR=${asdf_layer}
+EOF
   mkdir -p "$asdf_layer/profile.d"
   asdf_profile="$asdf_layer/profile.d/asdf.sh"
   cat > $asdf_profile <<-EOF
-export ASDF_DIR=${asdf_layer}
-export ASDF_DATA_DIR=${asdf_layer}
 . ${asdf_layer}/asdf.sh
 EOF
   source $asdf_profile
@@ -78,6 +82,8 @@ EOF
     asdf plugin add golang
     asdf install golang $golang_version
   fi
+else
+  io::info "Moving along. Nothing to see here 👮🏻‍♀️"
 fi
 
 exit 0

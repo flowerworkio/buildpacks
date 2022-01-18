@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+bin_dir=$(cd $(dirname $0); pwd)
+source "$bin_dir/io.sh"
+
+io::title "===> phoenix buildpack"
+
+layers_dir="$1"
+platform_dir="$2"
+build_plan="$3"
+phoenix_layer="$layers_dir/phoenix"
+
+io::title "---> Installing Hex"
+mix local.hex --force > /dev/null
+
+io::title "---> Installing Rebar"
+mix local.rebar --force > /dev/null
+
+io::title "---> Installing and compiling packages"
+mix do deps.get, deps.compile
+
+io::title "---> Compiling project"
+mix compile

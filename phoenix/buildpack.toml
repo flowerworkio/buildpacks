@@ -1,0 +1,8 @@
+api = "0.7"
+
+[buildpack]
+  id = "flowerworkio/phoenix"
+  version = "0.0.1"
+
+[[stacks]]
+  id = "io.flowerwork.stacks.focal"
