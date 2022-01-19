@@ -46,3 +46,13 @@ function io::warn() {
   echo -e "${yellow}${message}${reset}" >&2
   exit 0
 }
+
+function io::debug() {
+  local message purple reset
+  message="${1}"
+  purple="\033[0;35m"
+  reset="\033[1;35m"
+
+  echo -e "${purple}${message}${reset}" >&2
+  exit 0
+}

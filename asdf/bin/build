@@ -12,10 +12,9 @@ source "$bin_dir/io.sh"
 
 io::title "===> asdf buildpack"
 
-layers_dir="$1"
+asdf_layer="$1/asdf"
 platform_dir="$2"
 build_plan="$3"
-asdf_layer="$layers_dir/.asdf"
 
 local_asdf_checksum=$((sha256sum .tool-versions || echo 'DOES_NOT_EXIST') | cut -d ' ' -f 1)
 remote_asdf_checksum=$(cat "$asdf_layer.toml" | yj -t | jq -r .metadata.asdf_checksum 2>/dev/null || echo 'DOES_NOT_EXIST')
@@ -38,20 +37,6 @@ EOF
   source $asdf_env
   source $asdf_profile
   asdf update
-  cat > "$asdf_layer.toml" <<EOF
-[types]
-build = true
-cache = true
-launch = true
-
-[metadata]
-asdf_checksum = "$local_asdf_checksum"
-erlang_version = "$erlang_version"
-elixir_version = "$elixir_version"
-nodejs_version = "$nodejs_version"
-ruby_version = "$ruby_version"
-golang_version = "$golang_version"
-EOF
 
   if [[ -n "$erlang_version" ]]; then
     io::title "Installing erlang"
@@ -86,5 +71,22 @@ EOF
 else
   io::info "Moving along. Nothing to see here 👮🏻‍♀️"
 fi
+
+io::title "Writing layer metadata"
+cat > "$asdf_layer.toml" <<-EOF
+[types]
+build = true
+cache = true
+launch = true
+
+[metadata]
+asdf_checksum = "$local_asdf_checksum"
+erlang_version = "$erlang_version"
+elixir_version = "$elixir_version"
+nodejs_version = "$nodejs_version"
+ruby_version = "$ruby_version"
+golang_version = "$golang_version"
+EOF
+echo -e "Wrote $asdf_layer.toml"
 
 exit 0
