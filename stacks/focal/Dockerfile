@@ -9,8 +9,15 @@ RUN groupadd cnb --gid ${CNB_GROUP_ID} && \
   useradd --uid ${CNB_USER_ID} --gid ${CNB_GROUP_ID} -m -s /bin/bash cnb
 
 RUN apt-get update && \
-  apt-get -y install xz-utils ca-certificates git && \
+  apt-get -y install xz-utils ca-certificates git locales sed && \
   rm -rf /var/lib/apt/lists/*
+
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
+    locale-gen
+
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 FROM base as run
 
@@ -19,7 +26,7 @@ USER ${CNB_USER_ID}:${CNB_GROUP_ID}
 FROM base as build
 
 RUN apt-get update && \
-  apt-get -y install wget jq gawk sed curl grep && \
+  apt-get -y install wget jq gawk curl grep && \
   rm -rf /var/lib/apt/lists/* && \
   wget https://github.com/sclevine/yj/releases/download/v5.0.0/yj-linux -O /usr/local/bin/yj && \
   chmod +x /usr/local/bin/yj
