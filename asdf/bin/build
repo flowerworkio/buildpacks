@@ -16,6 +16,8 @@ asdf_layer="$1/asdf"
 platform_dir="$2"
 build_plan="$3"
 
+mkdir -p "$asdf_layer"
+
 local_asdf_checksum=$((sha256sum .tool-versions || echo 'DOES_NOT_EXIST') | cut -d ' ' -f 1)
 remote_asdf_checksum=$(cat "$asdf_layer.toml" | yj -t | jq -r .metadata.asdf_checksum 2>/dev/null || echo 'DOES_NOT_EXIST')
 
@@ -26,8 +28,8 @@ if [[ "$local_asdf_checksum" != "$remote_asdf_checksum" ]]; then
   mkdir -p "$asdf_layer/env"
   asdf_env="$asdf_layer/env/asdf"
   cat > $asdf_env <<-EOF
-  export ASDF_DIR=${asdf_layer}
-  export ASDF_DATA_DIR=${asdf_layer}
+  ASDF_DIR=${asdf_layer}
+  ASDF_DATA_DIR=${asdf_layer}
 EOF
   mkdir -p "$asdf_layer/profile.d"
   asdf_profile="$asdf_layer/profile.d/asdf.sh"
