@@ -21,57 +21,64 @@ mkdir -p "$asdf_layer"
 local_asdf_checksum=$((sha256sum .tool-versions || echo 'DOES_NOT_EXIST') | cut -d ' ' -f 1)
 remote_asdf_checksum=$(cat "$asdf_layer.toml" | yj -t | jq -r .metadata.asdf_checksum 2>/dev/null || echo 'DOES_NOT_EXIST')
 
-if [[ "$local_asdf_checksum" != "$remote_asdf_checksum" ]]; then
-  io::title "---> Downloading and extracting asdf"
-  rm -rf $asdf_layer
-  git clone https://github.com/asdf-vm/asdf.git $asdf_layer --branch v0.9.0
-  mkdir -p "$asdf_layer/env"
-  asdf_env="$asdf_layer/env/asdf"
-  cat > $asdf_env <<-EOF
-  ASDF_DIR=${asdf_layer}
-  ASDF_DATA_DIR=${asdf_layer}
+if [[ "$local_asdf_checksum" == "$remote_asdf_checksum" ]]; then
+  io::info "Move along. Nothing to see here 👮🏻‍♀️ (restore from cache)"
+  exit 0
+fi
+
+io::title "---> Downloading and extracting asdf"
+rm -rf $asdf_layer
+git clone https://github.com/asdf-vm/asdf.git $asdf_layer --branch v0.9.0
+
+io::title "---> Configuring asdf"
+mkdir -p "$asdf_layer/env"
+asdf_env="$asdf_layer/env/asdf"
+cat > $asdf_env <<-EOF
+ASDF_DIR=${asdf_layer}
+ASDF_DATA_DIR=${asdf_layer}
 EOF
-  mkdir -p "$asdf_layer/profile.d"
-  asdf_profile="$asdf_layer/profile.d/asdf.sh"
-  cat > $asdf_profile <<-EOF
+set -o allexport
+source $asdf_env
+set +o allexport
+
+mkdir -p "$asdf_layer/profile.d"
+asdf_profile="$asdf_layer/profile.d/asdf.sh"
+cat > $asdf_profile <<-EOF
 . ${asdf_layer}/asdf.sh
 EOF
-  source $asdf_env
-  source $asdf_profile
-  asdf update
+source $asdf_profile
+asdf update
+asdf info
 
-  if [[ -n "$erlang_version" ]]; then
-    io::title "Installing erlang"
-    asdf plugin add erlang
-    export KERL_CONFIGURE_OPTIONS="--without-wx --without-debugger --without-observer --without-et"
-    asdf install erlang $erlang_version
-  fi
+if [[ -n "$erlang_version" ]]; then
+  io::title "Installing erlang"
+  asdf plugin add erlang
+  export KERL_CONFIGURE_OPTIONS="--without-wx --without-debugger --without-observer --without-et"
+  asdf install erlang $erlang_version
+fi
 
-  if [[ -n "$elixir_version" ]]; then
-    io::title "Installing elixir"
-    asdf plugin add elixir
-    asdf install elixir $elixir_version
-  fi
+if [[ -n "$elixir_version" ]]; then
+  io::title "Installing elixir"
+  asdf plugin add elixir
+  asdf install elixir $elixir_version
+fi
 
-  if [[ -n "$nodejs_version" ]]; then
-    io::title "Installing nodejs"
-    asdf plugin add nodejs
-    asdf install nodejs $nodejs_version
-  fi
+if [[ -n "$nodejs_version" ]]; then
+  io::title "Installing nodejs"
+  asdf plugin add nodejs
+  asdf install nodejs $nodejs_version
+fi
 
-  if [[ -n "$ruby_version" ]]; then
-    io::title "Installing ruby"
-    asdf plugin add ruby
-    asdf install ruby $ruby_version
-  fi
+if [[ -n "$ruby_version" ]]; then
+  io::title "Installing ruby"
+  asdf plugin add ruby
+  asdf install ruby $ruby_version
+fi
 
-  if [[ -n "$golang_version" ]]; then
-    io::title "Installing golang"
-    asdf plugin add golang
-    asdf install golang $golang_version
-  fi
-else
-  io::info "Moving along. Nothing to see here 👮🏻‍♀️"
+if [[ -n "$golang_version" ]]; then
+  io::title "Installing golang"
+  asdf plugin add golang
+  asdf install golang $golang_version
 fi
 
 io::title "Writing layer metadata"
