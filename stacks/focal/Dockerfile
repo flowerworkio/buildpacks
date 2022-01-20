@@ -10,12 +10,10 @@ RUN groupadd cnb --gid ${CNB_GROUP_ID} && \
 
 RUN apt-get update && \
   apt-get -y install xz-utils ca-certificates git locales sed && \
-  rm -rf /var/lib/apt/lists/*
+  rm -rf /var/lib/apt/lists/* && \
+  localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
-RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
-    locale-gen
-
-ENV LANG en_US.UTF-8
+ENV LANG en_US.utf8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
