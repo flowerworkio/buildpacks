@@ -6,16 +6,46 @@ source "$bin_dir/io.sh"
 
 io::title "===> phoenix buildpack"
 
+asdf_layer="/layers/flowerworkio_asdf/asdf/"
+mix_layer="$1/mix"
 phoenix_layer="$1/phoenix"
 platform_dir="$2"
 build_plan="$3"
 
+mkdir -p "$mix_layer"
+mkdir -p "$mix_layer/.mix"
+mkdir -p "$mix_layer/.hex"
+mkdir -p "$phoenix_layer"
+
 io::title "---> Sourcing asdf"
-io::debug "$(ls -a /layers/)"
-io::title "👆:layers:\n"
-io::debug "$(ls -a /layers/flowerworkio_asdf/)"
-io::title "👆:flowerwork_asdf:\n"
-source "$phoenix_layer/../flowerworkio_asdf/profile.d/asdf.sh"
+set -o allexport
+source "$asdf_layer/env/asdf"
+set +o allexport
+source "$asdf_layer/profile.d/asdf.sh"
+asdf info
+
+io::title "---> Setting MIX_ENV, MIX_HOME, HEX_HOME"
+mkdir -p "$mix_layer/env"
+cat > "$mix_layer/env/mix" <<-EOF
+ MIX_ENV=prod
+ MIX_HOME=$mix_layer/.mix
+ HEX_HOME=$mix_layer/.hex
+EOF
+set -o allexport
+source "$mix_layer/env/mix"
+set +o allexport
+
+io::title "---> Setting LANG, LANGUAGE, LC_ALL"
+mkdir -p "$mix_layer/env"
+cat > "$mix_layer/env/locale" <<-EOF
+LANG=en_US.UTF-8
+LANGUAGE=en_US:en
+LC_ALL=en_US.UTF-8
+EOF
+set -o allexport
+source "$mix_layer/env/locale"
+set +o allexport
+locale
 
 io::title "---> Installing Hex"
 mix local.hex --force > /dev/null
@@ -24,12 +54,31 @@ io::title "---> Installing Rebar"
 mix local.rebar --force > /dev/null
 
 io::title "---> Installing and compiling packages"
-mix do deps.get, deps.compile
+mix deps.get
+mix deps.compile
 
-io::title "---> Compiling project"
+io::title "---> Compile assets"
+mix assets.deploy
+
+io::title "---> Compiling release"
 mix compile
+mix release
 
-cat > "$phoenix_layer.toml" <<EOF
+io::title "---> Copying release to layer"
+cp ./_build/prod/rel/platform $phoenix_layer # Need to find a way to parse the release name here
+
+io::title "---> Writing $mix_layer.toml"
+cat > "$mix_layer.toml" <<-EOF
+[types]
+build = true
+cache = false
+launch = true
+
+[metadata]
+EOF
+
+io::title "---> Writing $phoenix_layer.toml"
+cat > "$phoenix_layer.toml" <<-EOF
 [types]
 build = true
 cache = false
