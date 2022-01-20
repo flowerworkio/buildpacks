@@ -21,6 +21,23 @@ mkdir -p "$asdf_layer"
 local_asdf_checksum=$((sha256sum .tool-versions || echo 'DOES_NOT_EXIST') | cut -d ' ' -f 1)
 remote_asdf_checksum=$(cat "$asdf_layer.toml" | yj -t | jq -r .metadata.asdf_checksum 2>/dev/null || echo 'DOES_NOT_EXIST')
 
+io::title "Writing layer metadata"
+cat > "$asdf_layer.toml" <<-EOF
+[types]
+build = true
+cache = true
+launch = true
+
+[metadata]
+asdf_checksum = "$local_asdf_checksum"
+erlang_version = "$erlang_version"
+elixir_version = "$elixir_version"
+nodejs_version = "$nodejs_version"
+ruby_version = "$ruby_version"
+golang_version = "$golang_version"
+EOF
+echo -e "Wrote $asdf_layer.toml"
+
 if [[ "$local_asdf_checksum" == "$remote_asdf_checksum" ]]; then
   io::info "Move along. Nothing to see here 👮🏻‍♀️ (restore from cache)"
   exit 0
@@ -80,22 +97,5 @@ if [[ -n "$golang_version" ]]; then
   asdf plugin add golang
   asdf install golang $golang_version
 fi
-
-io::title "Writing layer metadata"
-cat > "$asdf_layer.toml" <<-EOF
-[types]
-build = true
-cache = true
-launch = true
-
-[metadata]
-asdf_checksum = "$local_asdf_checksum"
-erlang_version = "$erlang_version"
-elixir_version = "$elixir_version"
-nodejs_version = "$nodejs_version"
-ruby_version = "$ruby_version"
-golang_version = "$golang_version"
-EOF
-echo -e "Wrote $asdf_layer.toml"
 
 exit 0
