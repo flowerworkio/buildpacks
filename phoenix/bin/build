@@ -7,6 +7,7 @@ source "$bin_dir/io.sh"
 io::title "===> phoenix buildpack"
 
 asdf_layer="/layers/flowerworkio_asdf/asdf/"
+buildpack_layer="$1"
 mix_layer="$1/mix"
 phoenix_layer="$1/phoenix"
 platform_dir="$2"
@@ -44,15 +45,21 @@ source "$mix_layer/env/locale"
 set +o allexport
 locale
 
+io::title "---> Cleaning up directories to avoid cross-compilation"
+rm -rf ./_build/ ./deps/ ./assets/node_modules
+
 io::title "---> Installing Hex"
 mix local.hex --force > /dev/null
 
 io::title "---> Installing Rebar"
 mix local.rebar --force > /dev/null
 
-io::title "---> Installing and compiling packages"
+io::title "---> Installing and compiling hex packages"
 mix deps.get
 mix deps.compile
+
+io::title "---> Installing yarn packages"
+yarn install --cwd assets/
 
 io::title "---> Compile assets"
 mix assets.deploy
