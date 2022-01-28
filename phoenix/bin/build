@@ -90,3 +90,13 @@ launch = true
 
 [metadata]
 EOF
+
+io::title "---> Setting default start command"
+cat > "$buildpack_layer/launch.toml" <<-EOF
+[[processes]]
+type = "start"
+command = "_build/prod/rel/platform/bin/platform"
+args = ["start"]
+direct = false
+default = true
+EOF
