@@ -48,19 +48,11 @@ rm -rf $asdf_layer
 git clone https://github.com/asdf-vm/asdf.git $asdf_layer --branch v0.9.0
 
 io::title "---> Configuring asdf"
-mkdir -p "$asdf_layer/env"
-asdf_env="$asdf_layer/env/asdf"
-cat > $asdf_env <<-EOF
-ASDF_DIR=${asdf_layer}
-ASDF_DATA_DIR=${asdf_layer}
-EOF
-set -o allexport
-source $asdf_env
-set +o allexport
-
 mkdir -p "$asdf_layer/profile.d"
 asdf_profile="$asdf_layer/profile.d/asdf.sh"
 cat > $asdf_profile <<-EOF
+export ASDF_DIR=${asdf_layer}
+export ASDF_DATA_DIR=${asdf_layer}
 . ${asdf_layer}/asdf.sh
 EOF
 source $asdf_profile

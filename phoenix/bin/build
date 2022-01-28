@@ -18,18 +18,15 @@ mkdir -p "$mix_layer/.hex"
 mkdir -p "$phoenix_layer"
 
 io::title "---> Sourcing asdf"
-set -o allexport
-source "$asdf_layer/env/asdf"
-set +o allexport
 source "$asdf_layer/profile.d/asdf.sh"
 asdf info
 
 io::title "---> Setting MIX_ENV, MIX_HOME, HEX_HOME"
 mkdir -p "$mix_layer/env"
 cat > "$mix_layer/env/mix" <<-EOF
- MIX_ENV=prod
- MIX_HOME=$mix_layer/.mix
- HEX_HOME=$mix_layer/.hex
+MIX_ENV=prod
+MIX_HOME=$mix_layer/.mix
+HEX_HOME=$mix_layer/.hex
 EOF
 set -o allexport
 source "$mix_layer/env/mix"
