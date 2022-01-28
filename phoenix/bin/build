@@ -65,7 +65,7 @@ mix compile
 mix release --overwrite
 
 io::title "---> Copying release to layer"
-cp ./_build/prod/rel/platform $phoenix_layer # Need to find a way to parse the release name here
+cp -r ./_build/prod/rel/platform $phoenix_layer # Need to find a way to parse the release name here
 
 io::title "---> Writing $mix_layer.toml"
 cat > "$mix_layer.toml" <<-EOF
