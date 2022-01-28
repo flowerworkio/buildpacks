@@ -76,6 +76,9 @@ if [[ -n "$nodejs_version" ]]; then
   io::title "Installing nodejs"
   asdf plugin add nodejs
   asdf install nodejs $nodejs_version
+  npm install -g npm
+  npm install -g yarn
+  asdf reshim
 fi
 
 if [[ -n "$ruby_version" ]]; then
