@@ -64,11 +64,11 @@ yarn install --cwd assets/
 io::title "---> Installing tailwind binary"
 mix tailwind.install
 
-# io::title "---> Installing esbuild binary"
-# mix esbuild.install
+io::title "---> Installing esbuild binary"
+mix esbuild.install
 
-# io::title "---> Compile assets"
-# mix assets.deploy
+io::title "---> Compile assets"
+mix assets.deploy
 
 io::title "---> Compiling release"
 mix compile
