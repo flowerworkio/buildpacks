@@ -1,0 +1,8 @@
+[buildpack]
+uri = "."
+
+# [[dependencies]]
+# uri = "../asdf"
+
+[platform]
+os = "linux"
