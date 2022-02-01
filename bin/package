@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+pack buildpack package flowerworkio/asdf --config asdf/package.toml
+
+pack buildpack package flowerworkio/phoenix --config phoenix/package.toml
