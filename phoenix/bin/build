@@ -58,8 +58,16 @@ io::title "---> Installing and compiling hex packages"
 mix deps.get
 mix deps.compile
 
-io::title "---> Installing yarn packages"
-yarn install --cwd assets/
+io::title "---> Installing npm packages"
+if [ -f ./assets/package-lock.json ]; then
+  io::info "Found package-lock.json"
+  npm install --prefix assets
+elif [ -f ./assets/yarn.lock ]; then
+  io::info "Found yarn.lock"
+  yarn install --cwd assets/
+else
+  io::info "No npm package manager files found in ./assets"
+fi
 
 io::title "---> Installing tailwind binary"
 mix tailwind.install
