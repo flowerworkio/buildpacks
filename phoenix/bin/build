@@ -78,12 +78,12 @@ mix esbuild.install
 io::title "---> Compile assets"
 mix assets.deploy
 
-io::title "---> Compiling release"
-mix compile
-mix release --overwrite
+io::title "---> Extracting app name"
+mix app.tree > release_name
+release_name=$(cat release_name | head -n 1)
 
-io::title "---> Copying release to layer"
-cp -r ./_build/prod/rel/platform $phoenix_layer # Need to find a way to parse the release name here
+io::title "---> Compiling release"
+mix release --force --overwrite --path $phoenix_layer
 
 io::title "---> Writing $mix_layer.toml"
 cat > "$mix_layer.toml" <<-EOF
@@ -109,8 +109,22 @@ io::title "---> Setting default start command"
 cat > "$buildpack_layer/launch.toml" <<-EOF
 [[processes]]
 type = "start"
-command = "_build/prod/rel/platform/bin/platform"
+command = "$phoenix_layer/bin/$release_name"
 args = ["start"]
 direct = false
 default = true
+
+[[processes]]
+type = "iex"
+command = "$phoenix_layer/bin/$release_name"
+args = ["start_iex"]
+direct = false
+default = false
+
+[[processes]]
+type = "eval"
+command = "$phoenix_layer/bin/$release_name"
+args = ["eval"]
+direct = false
+default = false
 EOF
