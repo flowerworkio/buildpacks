@@ -27,14 +27,16 @@ publish_builder(){
 
 package_buildpacks(){
   describe "Packaging buildpacks"
-  flowerworkio_asdf_version=$(cat asdf/buildpack.toml | yj -tj | jq -r '.buildpack.version')
-  flowerworkio_phoenix_version=$(cat phoenix/buildpack.toml | yj -tj | jq -r '.buildpack.version')
+  local flowerworkio_asdf_version=$(cat asdf/buildpack.toml | yj -tj | jq -r '.buildpack.version')
+  local flowerworkio_phoenix_version=$(cat phoenix/buildpack.toml | yj -tj | jq -r '.buildpack.version')
   pack buildpack package flowerworkio/asdf:$flowerworkio_asdf_version --config asdf/package.toml
   pack buildpack package flowerworkio/phoenix:$flowerworkio_phoenix_version --config phoenix/package.toml
 }
 
 publish_buildpacks(){
   describe "Publishing buildpacks"
+  local flowerworkio_asdf_version=$(cat asdf/buildpack.toml | yj -tj | jq -r '.buildpack.version')
+  local flowerworkio_phoenix_version=$(cat phoenix/buildpack.toml | yj -tj | jq -r '.buildpack.version')
   docker push flowerworkio/asdf:$flowerworkio_asdf_version
   docker push flowerworkio/phoenix:$flowerworkio_phoenix_version
 }
