@@ -1,8 +1,3 @@
-brew_add_to_shell() {
-  describe "Add homebrew to shell"
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-}
-
 describe() {
   echo "--- $1…"
 }

@@ -3,9 +3,14 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
-echo $(pwd)
+brew_add_to_shell() {
+  describe "Add homebrew to shell"
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+}
 
-source bin/functions.sh
+describe() {
+  echo "--- $1…"
+}
 
 if [ "$BUILDKITE_STEP_KEY" == "ci" ]; then
   brew_add_to_shell
