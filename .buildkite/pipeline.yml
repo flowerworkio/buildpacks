@@ -1,0 +1,4 @@
+steps:
+  - label: "Package and publish Stack, Builder, and Buildpacks"
+    key: ci
+    command: ./bin/ci

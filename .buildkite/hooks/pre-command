@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+source bin/functions.sh
+
+if [ "$BUILDKITE_STEP_KEY" == "ci" ]; then
+  brew_add_to_shell
+else
+  describe "Skipping pre-command hook"
+fi
