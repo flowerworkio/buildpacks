@@ -4,7 +4,13 @@ ARG TARGETOS TARGETARCH
 ENV CNB_USER_ID=1000
 ENV CNB_GROUP_ID=1000
 ENV CNB_STACK_ID="io.flowerwork.stacks.focal"
-LABEL io.buildpacks.stack.id="io.flowerwork.stacks.focal"
+LABEL io.buildpacks.stack.id=$CNB_STACK_ID
+LABEL io.buildpacks.stack.maintainer="Flowerwork Inc"
+LABEL io.buildpacks.stack.homepage="https://github.com/flowerworkio/buildpacks"
+LABEL io.buildpacks.stack.distro.name="Ubuntu"
+LABEL io.buildpacks.stack.distro.version="20.04"
+LABEL io.buildpacks.stack.description="Flowerwork stack based on Ubuntu 20.04 (focal)"
+LABEL io.buildpacks.stack.metadata=""
 
 RUN groupadd cnb --gid ${CNB_GROUP_ID} && \
   useradd --uid ${CNB_USER_ID} --gid ${CNB_GROUP_ID} -m -s /bin/bash cnb

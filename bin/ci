@@ -10,7 +10,7 @@ package_buildpacks
 package_builder
 
 set +u
-if [ "$BUILDKITE_BRANCH" == "main" ]; then
+if [ -n "$CI" ] && [ "$BUILDKITE_BRANCH" == "main" ]; then
   ./bin/publish
 fi
 set -u
