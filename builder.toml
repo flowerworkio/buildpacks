@@ -1,3 +1,5 @@
+description = "Flowerwork builder for the Ubuntu 20.04 focal stack"
+
 [[buildpacks]]
 id = "flowerworkio/asdf"
 uri = "asdf"
@@ -8,7 +10,6 @@ id = "flowerworkio/phoenix"
 uri = "phoenix"
 version = "0.0.1"
 
-# Order used for detection
 [[order]]
   [[order.group]]
   id = "flowerworkio/asdf"
@@ -19,9 +20,7 @@ version = "0.0.1"
 
 [stack]
 id = "io.flowerwork.stacks.focal"
-# This image is used at runtime
 run-image = "flowerworkio/run:focal"
-# This image is used at build-time
 build-image = "flowerworkio/build:focal"
 
 [lifecycle]
