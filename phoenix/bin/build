@@ -4,7 +4,7 @@ set -euo pipefail
 bin_dir=$(cd $(dirname $0); pwd)
 source "$bin_dir/io.sh"
 
-io::title "===> phoenix buildpack"
+io::title "--- phoenix buildpack build"
 
 asdf_layer="/layers/flowerworkio_asdf/asdf/"
 buildpack_layer="$1"

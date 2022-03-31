@@ -10,7 +10,7 @@ set -euo pipefail
 bin_dir=$(cd $(dirname $0); pwd)
 source "$bin_dir/io.sh"
 
-io::title "===> asdf buildpack"
+io::title "--- asdf buildpack build"
 
 asdf_layer="$1/asdf"
 platform_dir="$2"
