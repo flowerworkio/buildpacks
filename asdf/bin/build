@@ -36,9 +36,12 @@ golang_version = "$golang_version"
 EOF
 echo -e "Wrote $asdf_layer.toml"
 
+
 if [[ "$local_asdf_checksum" == "$remote_asdf_checksum" ]]; then
-  io::info "Move along. Nothing to see here 👮🏻‍♀️ (restore from cache)"
+  io::info "Cache hit. Move along. Nothing to see here 👮🏻‍♀️"
   exit 0
+else
+  io::info "Cache miss. local=$local_asdf_checksum remote=$remote_asdf_checksum"
 fi
 
 io::title "Downloading and extracting asdf"
