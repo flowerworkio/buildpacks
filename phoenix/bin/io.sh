@@ -6,7 +6,7 @@ function io::title() {
   reset="\033[0;39m"
   message="${1}"
 
-  echo -e "\n${blue}${message}${reset}" >&2
+  echo -e "\n${blue}--- ${message}${reset}" >&2
 }
 
 function io::info() {

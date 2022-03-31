@@ -4,8 +4,6 @@ set -euo pipefail
 bin_dir=$(cd $(dirname $0); pwd)
 source "$bin_dir/io.sh"
 
-io::title "--- phoenix buildpack build"
-
 asdf_layer="/layers/flowerworkio_asdf/asdf/"
 buildpack_layer="$1"
 mix_layer="$1/mix"
@@ -18,11 +16,11 @@ mkdir -p "$mix_layer/.mix"
 mkdir -p "$mix_layer/.hex"
 mkdir -p "$phoenix_layer"
 
-io::title "---> Sourcing asdf"
+io::title "Sourcing asdf"
 source "$asdf_layer/profile.d/asdf.sh"
 asdf info
 
-io::title "---> Setting MIX_ENV, MIX_HOME, HEX_HOME"
+io::title "Setting MIX_ENV, MIX_HOME, HEX_HOME"
 mkdir -p "$mix_layer/env"
 cat > "$mix_layer/env/mix" <<-EOF
 MIX_ENV=prod
@@ -33,7 +31,7 @@ set -o allexport
 source "$mix_layer/env/mix"
 set +o allexport
 
-io::title "---> Setting LANG, LANGUAGE, LC_ALL"
+io::title "Setting LANG, LANGUAGE, LC_ALL"
 mkdir -p "$mix_layer/env"
 cat > "$mix_layer/env/locale" <<-EOF
 LANG=en_US.UTF-8
@@ -45,20 +43,20 @@ source "$mix_layer/env/locale"
 set +o allexport
 locale
 
-io::title "---> Cleaning up directories to avoid cross-compilation"
+io::title "Cleaning up directories to avoid cross-compilation"
 rm -rf ./_build/ ./deps/ ./assets/node_modules
 
-io::title "---> Installing Hex"
+io::title "Installing Hex"
 mix local.hex --force > /dev/null
 
-io::title "---> Installing Rebar"
+io::title "Installing Rebar"
 mix local.rebar --force > /dev/null
 
-io::title "---> Installing and compiling hex packages"
+io::title "Installing and compiling hex packages"
 mix deps.get
 mix deps.compile
 
-io::title "---> Installing npm packages"
+io::title "Installing npm packages"
 if [ -f ./assets/package-lock.json ]; then
   io::info "Found package-lock.json"
   npm install --prefix assets
@@ -69,23 +67,23 @@ else
   io::info "No npm package manager files found in ./assets"
 fi
 
-io::title "---> Installing tailwind binary"
+io::title "Installing tailwind binary"
 mix tailwind.install
 
-io::title "---> Installing esbuild binary"
+io::title "Installing esbuild binary"
 mix esbuild.install
 
-io::title "---> Compile assets"
+io::title "Compile assets"
 mix assets.deploy
 
-io::title "---> Extracting app name"
+io::title "Extracting app name"
 mix app.tree > release_name
 release_name=$(cat release_name | head -n 1)
 
-io::title "---> Compiling release"
+io::title "Compiling release"
 mix release --force --overwrite --path $phoenix_layer
 
-io::title "---> Writing $mix_layer.toml"
+io::title "Writing $mix_layer.toml"
 cat > "$mix_layer.toml" <<-EOF
 [types]
 build = true
@@ -95,7 +93,7 @@ launch = true
 [metadata]
 EOF
 
-io::title "---> Writing $phoenix_layer.toml"
+io::title "Writing $phoenix_layer.toml"
 cat > "$phoenix_layer.toml" <<-EOF
 [types]
 build = true
@@ -105,7 +103,7 @@ launch = true
 [metadata]
 EOF
 
-io::title "---> Setting default start command"
+io::title "Setting default start command"
 cat > "$buildpack_layer/launch.toml" <<-EOF
 [[processes]]
 type = "start"

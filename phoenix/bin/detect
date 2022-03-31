@@ -5,7 +5,7 @@ set -euo pipefail
 platform_dir="$1"
 build_plan="$2"
 
-io::title "--- phoenix buildpack detect"
+io::title "phoenix buildpack detect"
 
 if [[ ! -f mix.exs ]]; then
   exit 100

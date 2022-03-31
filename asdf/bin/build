@@ -10,8 +10,6 @@ set -euo pipefail
 bin_dir=$(cd $(dirname $0); pwd)
 source "$bin_dir/io.sh"
 
-io::title "--- asdf buildpack build"
-
 asdf_layer="$1/asdf"
 platform_dir="$2"
 build_plan="$3"
@@ -43,11 +41,11 @@ if [[ "$local_asdf_checksum" == "$remote_asdf_checksum" ]]; then
   exit 0
 fi
 
-io::title "---> Downloading and extracting asdf"
+io::title "Downloading and extracting asdf"
 rm -rf $asdf_layer
 git clone https://github.com/asdf-vm/asdf.git $asdf_layer --branch v0.9.0
 
-io::title "---> Configuring asdf"
+io::title "Configuring asdf"
 mkdir -p "$asdf_layer/profile.d"
 asdf_profile="$asdf_layer/profile.d/asdf.sh"
 cat > $asdf_profile <<-EOF
