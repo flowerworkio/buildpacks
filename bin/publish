@@ -6,5 +6,5 @@ cd "$(dirname "$0")/.."
 source bin/functions.sh
 
 publish_stacks
-publish_builder
 publish_buildpacks
+publish_builder

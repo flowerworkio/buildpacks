@@ -6,9 +6,11 @@ cd "$(dirname "$0")/.."
 source bin/functions.sh
 
 package_stacks
-package_builder
 package_buildpacks
+package_builder
 
+set +u
 if [ "$BUILDKITE_BRANCH" == "main" ]; then
   ./bin/publish
 fi
+set -u
