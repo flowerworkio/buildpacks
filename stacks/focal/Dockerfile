@@ -1,4 +1,5 @@
-from ubuntu:focal as base
+FROM --platform=$BUILDPLATFORM ubuntu:focal AS base
+ARG TARGETOS TARGETARCH
 
 ENV CNB_USER_ID=1000
 ENV CNB_GROUP_ID=1000
@@ -17,11 +18,11 @@ ENV LANG en_US.utf8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-FROM base as run
+FROM --platform=$BUILDPLATFORM base AS run
 
 USER ${CNB_USER_ID}:${CNB_GROUP_ID}
 
-FROM base as build
+FROM --platform=$BUILDPLATFORM base AS build
 
 RUN apt-get update && \
   apt-get -y install wget jq gawk curl grep && \

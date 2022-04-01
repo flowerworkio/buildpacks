@@ -4,15 +4,43 @@ describe() {
 
 package_stacks() {
   describe "Packaging stacks"
-  docker build ./stacks/focal -t flowerworkio/base:focal --target base
-  docker build ./stacks/focal -t flowerworkio/run:focal --target run
-  docker build ./stacks/focal -t flowerworkio/build:focal --target build
+  docker buildx build \
+    --tag flowerworkio/base:focal \
+    --target base \
+    --platform=linux/amd64,linux/arm64 \
+    ./stacks/focal
+  docker buildx build \
+    --tag flowerworkio/run:focal \
+    --target run \
+    --platform=linux/amd64,linux/arm64 \
+    ./stacks/focal
+  docker buildx build \
+    --tag flowerworkio/build:focal \
+    --target build \
+    --platform=linux/amd64,linux/arm64 \
+    ./stacks/focal
 }
 
 publish_stacks(){
   describe "Publishing stacks"
-  docker push flowerworkio/build:focal
-  docker push flowerworkio/run:focal
+  docker buildx build \
+    --tag flowerworkio/base:focal \
+    --target base \
+    --platform=linux/amd64,linux/arm64 \
+    --push \
+    ./stacks/focal
+  docker buildx build \
+    --tag flowerworkio/run:focal \
+    --target run \
+    --platform=linux/amd64,linux/arm64 \
+    --push \
+    ./stacks/focal
+  docker buildx build \
+    --tag flowerworkio/build:focal \
+    --target build \
+    --platform=linux/amd64,linux/arm64 \
+    --push \
+    ./stacks/focal
 }
 
 package_builder(){
