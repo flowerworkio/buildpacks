@@ -3,20 +3,20 @@ description = "Flowerwork builder for the Ubuntu 20.04 focal stack"
 [[buildpacks]]
 id = "flowerworkio/asdf"
 uri = "asdf"
-version = "0.0.2"
+version = "0.0.3"
 
 [[buildpacks]]
 id = "flowerworkio/phoenix"
 uri = "phoenix"
-version = "0.0.2"
+version = "0.0.3"
 
 [[order]]
   [[order.group]]
   id = "flowerworkio/asdf"
-  version = "0.0.2"
+  version = "0.0.3"
   [[order.group]]
   id = "flowerworkio/phoenix"
-  version = "0.0.2"
+  version = "0.0.3"
 
 [stack]
 id = "io.flowerwork.stacks.focal"

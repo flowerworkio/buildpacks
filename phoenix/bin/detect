@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
+bin_dir=$(cd $(dirname $0); pwd)
+source "$bin_dir/io.sh"
 
 platform_dir="$1"
 build_plan="$2"

@@ -3,7 +3,7 @@ api = "0.7"
 [buildpack]
   homepage = "https://github.com/flowerworkio/buildpacks"
   id = "flowerworkio/phoenix"
-  version = "0.0.2"
+  version = "0.0.3"
 
 [[stacks]]
   id = "io.flowerwork.stacks.focal"
