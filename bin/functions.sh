@@ -34,6 +34,7 @@ package_stacks() {
 
 publish_stacks(){
   describe "Publishing stacks"
+  local rfc3339_release_date="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
   local stack_version="$(cat ./STACK_VERSION | xargs)"
   docker buildx build \
     --tag flowerworkio/base:focal \
@@ -60,7 +61,7 @@ publish_stacks(){
     --label io.buildpacks.stack.released=$rfc3339_release_date \
     --platform=linux/amd64,linux/arm64 \
     --target build \
-    --push \ 
+    --push \
     ./stacks/focal
 }
 
