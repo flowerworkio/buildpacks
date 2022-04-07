@@ -5,6 +5,8 @@ set -euo pipefail
 platform_dir="$1"
 build_plan="$2"
 
+io::title "asdf buildpack detect"
+
 if [[ ! -f .tool-versions ]]; then
   exit 100
 fi

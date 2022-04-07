@@ -1,8 +1,9 @@
 api = "0.7"
 
 [buildpack]
+  homepage = "https://github.com/flowerworkio/buildpacks"
   id = "flowerworkio/asdf"
-  version = "0.0.1"
+  version = "0.0.2"
 
 [[stacks]]
   id = "io.flowerwork.stacks.focal"

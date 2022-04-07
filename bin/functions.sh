@@ -3,43 +3,64 @@ describe() {
 }
 
 package_stacks() {
-  describe "Packaging stacks"
+  local rfc3339_release_date="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+  local stack_version="$(cat ./STACK_VERSION | xargs)"
+  describe "Packaging stack version=$stack_version release_date=$rfc3339_release_date"
   docker buildx build \
     --tag flowerworkio/base:focal \
-    --target base \
+    --tag flowerworkio/base:$stack_version \
+    --label io.buildpacks.stack.version=$stack_version \
+    --label io.buildpacks.stack.released=$rfc3339_release_date \
     --platform=linux/amd64,linux/arm64 \
+    --target base \
     ./stacks/focal
   docker buildx build \
     --tag flowerworkio/run:focal \
-    --target run \
+    --tag flowerworkio/run:$stack_version \
+    --label io.buildpacks.stack.version=$stack_version \
+    --label io.buildpacks.stack.released=$rfc3339_release_date \
     --platform=linux/amd64,linux/arm64 \
+    --target run \
     ./stacks/focal
   docker buildx build \
     --tag flowerworkio/build:focal \
-    --target build \
+    --tag flowerworkio/build:$stack_version \
+    --label io.buildpacks.stack.version=$stack_version \
+    --label io.buildpacks.stack.released=$rfc3339_release_date \
     --platform=linux/amd64,linux/arm64 \
+    --target build \
     ./stacks/focal
 }
 
 publish_stacks(){
   describe "Publishing stacks"
+  local stack_version="$(cat ./STACK_VERSION | xargs)"
   docker buildx build \
     --tag flowerworkio/base:focal \
-    --target base \
+    --tag flowerworkio/base:$stack_version \
+    --label io.buildpacks.stack.version=$stack_version \
+    --label io.buildpacks.stack.released=$rfc3339_release_date \
     --platform=linux/amd64,linux/arm64 \
+    --target base \
     --push \
     ./stacks/focal
   docker buildx build \
     --tag flowerworkio/run:focal \
-    --target run \
+    --tag flowerworkio/run:$stack_version \
+    --label io.buildpacks.stack.version=$stack_version \
+    --label io.buildpacks.stack.released=$rfc3339_release_date \
     --platform=linux/amd64,linux/arm64 \
+    --target run \
     --push \
     ./stacks/focal
   docker buildx build \
     --tag flowerworkio/build:focal \
-    --target build \
+    --tag flowerworkio/build:$stack_version \
+    --label io.buildpacks.stack.version=$stack_version \
+    --label io.buildpacks.stack.released=$rfc3339_release_date \
     --platform=linux/amd64,linux/arm64 \
-    --push \
+    --target build \
+    --push \ 
     ./stacks/focal
 }
 
