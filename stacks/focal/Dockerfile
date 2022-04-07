@@ -11,7 +11,6 @@ LABEL io.buildpacks.stack.distro.name="Ubuntu"
 LABEL io.buildpacks.stack.distro.version="20.04"
 LABEL io.buildpacks.stack.description="Flowerwork stack based on Ubuntu 20.04 (focal)"
 LABEL io.buildpacks.stack.metadata=""
-LABEL io.buildpacks.stack.mixins='["xz-utils", "ca-certificates", "git", "locales", "sed", "build:wget", "build:jq", "build:gawk", "build:curl", "build:grep", "build:yj", "build:build-essential", "build:autoconf", "build:m4", "build:libncurses5-dev", "build:libwxgtk3.0-gtk3-dev", "build:libwxgtk-webview3.0-gtk3-dev", "build:libgl1-mesa-dev", "build:libglu1-mesa-dev", "build:libpng-dev", "build:libssh-dev", "build:unixodbc-dev", "build:xsltproc", "build:fop", "build:libxml2-utils", "build:libncurses-dev", "build:openjdk-11-jdk", "build:python3", "build:g++", "build:make", "build:python3-pip"]'
 
 RUN groupadd cnb --gid ${CNB_GROUP_ID} && \
   useradd --uid ${CNB_USER_ID} --gid ${CNB_GROUP_ID} -m -s /bin/bash cnb
@@ -26,11 +25,13 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 FROM --platform=$BUILDPLATFORM base AS run
+LABEL io.buildpacks.stack.mixins='["xz-utils", "ca-certificates", "git", "locales", "sed"]'
 
 USER ${CNB_USER_ID}:${CNB_GROUP_ID}
 
 FROM --platform=$BUILDPLATFORM base AS build
 
+LABEL io.buildpacks.stack.mixins='["xz-utils", "ca-certificates", "git", "locales", "sed", "build:wget", "build:jq", "build:gawk", "build:curl", "build:grep", "build:yj", "build:build-essential", "build:autoconf", "build:m4", "build:libncurses5-dev", "build:libwxgtk3.0-gtk3-dev", "build:libwxgtk-webview3.0-gtk3-dev", "build:libgl1-mesa-dev", "build:libglu1-mesa-dev", "build:libpng-dev", "build:libssh-dev", "build:unixodbc-dev", "build:xsltproc", "build:fop", "build:libxml2-utils", "build:libncurses-dev", "build:openjdk-11-jdk", "build:python3", "build:g++", "build:make", "build:python3-pip"]'
 RUN apt-get update && \
   apt-get -y install wget jq gawk curl grep && \
   rm -rf /var/lib/apt/lists/* && \
